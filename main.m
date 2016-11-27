@@ -49,12 +49,34 @@ all=struct('rho',rho,'T',T,'V',V,'M',V./sqrt(T),'U',empty3, 'F', empty3,'J', emp
 dt=getdt(T,V,dx,CFL);
 
 all.U=encodeU(rho,A,V,T, dA);
+
+
+for z=1:s
 [all.F, all.J]=encode(all.U, dA);
-data(1)=all;
+data(z)=all;
 
 %McCormack solver
 
 for c=1:N-1
    Up(:,c)=-(all.F(:,c+1)-all.F(:,c))/dx-all.J(:,c); 
+   Ubar(:,c)=all.U(:,c)+Up(:,c)*dt;
+   
 end
+
+[rhobar,Tbar,Vbar]=decodeU(Ubar, A(1:end-1));
+Fbar=encode(Ubar, dA(1:end-1), A(1:end-1));
+
+for c=2:N-1
+   Upbar(:,c)=-(Fbar(:,c)-Fbar(:,c-1))/dx-all.J(:,c);    
+   
+end
+
+Upavg=.5*(Upbar+Ubar);
+
+Upavg(:,end+1)=[0,0,0];
+
+all.U=all.U+Upavg*dt;
+end
+
+[rho,T,V]=decode(all.U,T);
 

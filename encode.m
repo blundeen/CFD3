@@ -1,4 +1,4 @@
-function [ F, J ] = encode( U, dA)
+function [ F, J ] = encode( U, dA, A)
 %ENCODE Summary of this function goes here
 %   Detailed explanation goes here
 
