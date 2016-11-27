@@ -51,7 +51,7 @@ dt=getdt(T,V,dx,CFL);
 all.U=encodeU(rho,A,V,T, dA);
 
 
-for z=1:s
+for z=1:5 %will be total iterations
 [all.F, all.J]=encode(all.U, dA);
 data(z)=all;
 
@@ -78,5 +78,5 @@ Upavg(:,end+1)=[0,0,0];
 all.U=all.U+Upavg*dt;
 end
 
-[rho,T,V]=decode(all.U,T);
+[rho,T,V]=decodeU(all.U,T);
 

@@ -9,10 +9,9 @@ U2=U(2,:);
 
 U3=U(3,:);
 
-rho=U1./A
-V=U2./(rho.*A)
+rho=U1./A;
+V=U2./(rho.*A);
 
-T=(U3./(rho.*A)-gamma/2*V.^2)*(gamma-1)
-
+T=(U3./(rho.*A)-gamma/2*V.^2)*(gamma-1);
 end
 
