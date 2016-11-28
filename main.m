@@ -19,6 +19,7 @@ x=linspace(0,3,N);
 dx=x(2)-x(1);
 
 A=1+2.2*(x-1.5).^2;
+%natural log derivative
 dA=4.4*(x-1.5)./(1+2.2*(x-1.5).^2);
 
 %initial cinditions
@@ -51,7 +52,7 @@ dt=getdt(T,V,dx,CFL);
 all.U=encodeU(rho,A,V,T, dA);
 
 
-for z=1:5 %will be total iterations
+for z=1:100 %will be total iterations
 [all.F, all.J]=encode(all.U, dA);
 data(z)=all;
 
@@ -76,7 +77,34 @@ Upavg=.5*(Upbar+Ubar);
 Upavg(:,end+1)=[0,0,0];
 
 all.U=all.U+Upavg*dt;
+
+%BC 1
+[trash,trash,V2]=decodeU(all.U(:,2),A(2));
+[trash,trash,V3]=decodeU(all.U(:,3),A(3));
+
+V1=2*V2-V3;
+all.U(:,1)=encodeU(1,A(1),V1,1,dA);
+
+%BC end
+[rhoN2,TN2,VN2]=decodeU(all.U(:,end-2),A(end-2));
+[rhoN1,TN1,VN1]=decodeU(all.U(:,end-1),A(end-1));
+
+VN=2*VN1-VN2;
+rhoN=2*rhoN1-rhoN2;
+TN=2*TN1-TN2;
+all.U(:,end)=encodeU(rhoN,A(end),VN,TN,dA);
+
+
+%update data
+[all.rho,all.T,all.V]=decodeU(all.U,dA);
+plot(x,all.U(1,:))
+titl=sprintf('Mass flow rate (iteration %i)',z);
+title(titl);
+pause(.1)
+
 end
 
 [rho,T,V]=decodeU(all.U,T);
+
+
 
